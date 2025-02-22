@@ -1,8 +1,10 @@
 # File: src/api/server.py, Component Start: Line 1
 from flask import Flask, request, jsonify
+from flask_cors import CORS  # Added for CORS support
 import requests
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS
 
 EXTERNAL_API_URL = "https://abes.platform.simplifii.com/api/v1/admin/authenticate"
 HEADERS = {
