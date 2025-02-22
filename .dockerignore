@@ -1,0 +1,4 @@
+# File: .dockerignore, Component Start: Line 1
+__pycache__
+*.pyc
+.env
