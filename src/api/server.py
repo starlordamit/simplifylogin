@@ -5,7 +5,8 @@ import re
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-# Utility functions for parsing
+# Utility functions for parsing timetable data
+
 def remove_html_tags(text):
     return re.sub(r'<[^>]+>', '', text).strip()
 
@@ -171,7 +172,26 @@ def login():
     payload = {"username": username, "password": password}
     try:
         resp = requests.post(EXTERNAL_API_URL, headers=HEADERS, data=payload)
-        return (resp.text, resp.status_code, {'Content-Type': 'application/json'})
+        resp.raise_for_status()
+        login_response = resp.json()
+        if login_response.get("status") != 1:
+            return jsonify({"error": login_response.get("msg", "Login failed")}), 400
+        response_data = login_response.get("response", {})
+        result = {
+            "token": login_response.get("token", ""),
+            "email": response_data.get("email", ""),
+            "mobile": response_data.get("mobile", ""),
+            "name": response_data.get("name", ""),
+            "role": response_data.get("role", ""),
+            "roll_number": response_data.get("string4", ""),
+            "section": response_data.get("string5", ""),
+            "pin": response_data.get("string10", ""),
+            "year": response_data.get("int3", ""),
+            "semester": response_data.get("int4", ""),
+            "username": response_data.get("username", ""),
+            "batch": response_data.get("int6", "")
+        }
+        return jsonify(result), resp.status_code
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
