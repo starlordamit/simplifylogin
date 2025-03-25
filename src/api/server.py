@@ -2,6 +2,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS  # Added for CORS support
 import requests
+import json
+from schedule.get_student_schedule import get_student_schedule  # Import the timetable function
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS
@@ -37,6 +39,7 @@ def login():
         return (resp.text, resp.status_code, {'Content-Type': 'application/json'})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 @app.route('/trending', methods=['GET'])
 def trending():
     url = "https://api.thumbnailpreview.com/api/youtube/trending"
@@ -61,6 +64,26 @@ def trending():
         return (resp.text, resp.status_code, {'Content-Type': 'application/json'})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/timetable', methods=['POST'])
+def timetable_route():
+    """
+    Expects a JSON body with a "token" field.
+    Returns the formatted timetable as JSON.
+    """
+    data = request.get_json() if request.is_json else request.form
+    token = data.get('token')
+    if not token:
+        return jsonify({"error": "Missing token"}), 400
+
+    timetable_result = get_student_schedule(token)
+    try:
+        # Validate and return JSON if timetable_result is valid JSON string
+        timetable_json = json.loads(timetable_result)
+        return jsonify(timetable_json)
+    except json.JSONDecodeError:
+        # Otherwise, return the error message
+        return jsonify({"error": timetable_result}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
