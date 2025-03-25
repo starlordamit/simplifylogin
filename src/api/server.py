@@ -172,6 +172,25 @@ def login():
     payload = {"username": username, "password": password}
     try:
         resp = requests.post(EXTERNAL_API_URL, headers=HEADERS, data=payload)
+        return (resp.text, resp.status_code, {'Content-Type': 'application/json'})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/v2/login', methods=['POST'])
+def v2_login():
+    """
+    New login endpoint v2 that returns the same processed login details.
+    Expects username and password in the JSON body.
+    """
+    data = request.get_json() if request.is_json else request.form
+    username = data.get('username')
+    password = data.get('password')
+    if not username or not password:
+        return jsonify({"error": "Missing username or password"}), 400
+
+    payload = {"username": username, "password": password}
+    try:
+        resp = requests.post(EXTERNAL_API_URL, headers=HEADERS, data=payload)
         resp.raise_for_status()
         login_response = resp.json()
         if login_response.get("status") != 1:
