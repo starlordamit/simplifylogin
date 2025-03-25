@@ -198,6 +198,7 @@ def v2_login():
         response_data = login_response.get("response", {})
         result = {
             "token": login_response.get("token", ""),
+            "id":response_data.get("id", ""),
             "email": response_data.get("email", ""),
             "mobile": response_data.get("mobile", ""),
             "name": response_data.get("name", ""),
