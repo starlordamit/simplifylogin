@@ -176,6 +176,7 @@ def login():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# File: src/api/server.py, Component Start: Line 132
 @app.route('/v2/login', methods=['POST'])
 def v2_login():
     """
@@ -189,16 +190,36 @@ def v2_login():
         return jsonify({"error": "Missing username or password"}), 400
 
     payload = {"username": username, "password": password}
+
     try:
+        # Step 1: Xano login attempt
+        xano_resp = requests.post(
+            "https://x8ki-letl-twmt.n7.xano.io/api:T29bdBNk/user",
+            headers={
+                "Content-Type": "application/json",
+                "User-Agent": "Mozilla/5.0",
+                "Referer": "https://aims-abes.vercel.app/",
+                "sec-ch-ua-platform": "\"macOS\"",
+                "sec-ch-ua": "\"Chromium\";v=\"134\", \"Not:A-Brand\";v=\"24\", \"Google Chrome\";v=\"134\"",
+                "sec-ch-ua-mobile": "?0",
+                "Accept": "application/json, text/plain, */*"
+            },
+            json=payload
+        )
+        xano_resp.raise_for_status()
+
+        # Step 2: ABES login
         resp = requests.post(EXTERNAL_API_URL, headers=HEADERS, data=payload)
         resp.raise_for_status()
         login_response = resp.json()
+
         if login_response.get("status") != 1:
             return jsonify({"error": login_response.get("msg", "Login failed")}), 400
+
         response_data = login_response.get("response", {})
         result = {
             "token": login_response.get("token", ""),
-            "id":response_data.get("id", ""),
+            "id": response_data.get("id", ""),
             "email": response_data.get("email", ""),
             "mobile": response_data.get("mobile", ""),
             "name": response_data.get("name", ""),
@@ -212,8 +233,10 @@ def v2_login():
             "batch": response_data.get("int6", "")
         }
         return jsonify(result), resp.status_code
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/trending', methods=['GET'])
 def trending():
