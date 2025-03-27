@@ -256,6 +256,33 @@ def timetable_route():
         return jsonify(timetable_json)
     except json.JSONDecodeError:
         return jsonify({"error": timetable_result}), 500
+        
+# File: app/routes.py   Line: @app.route('/notifications', methods=['GET'])
+@app.route('/notifications', methods=['GET'])
+def notifications_route():
+    """
+    Returns a list of notifications in JSON format.
+    Each notification includes: details, link, author, dept, section.
+    """
+    notifications = [
+        {
+            "details": "Exam schedule released",
+            "link": "https://example.com/exam-schedule",
+            "author": "Admin",
+            "dept": "CSE",
+            "section": "A"
+        },
+        {
+            "details": "Workshop on AI",
+            "link": "https://example.com/ai-workshop",
+            "author": "Prof. Sharma",
+            "dept": "CSE",
+            "section": "B"
+        }
+    ]
+    return jsonify(notifications)
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
