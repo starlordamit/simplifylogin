@@ -287,22 +287,36 @@ def notifications_route():
     Returns a list of notifications in JSON format.
     Each notification includes: details, link, author, dept, section.
     """
-    notifications = [
-        {
-            "details": "Exam schedule released",
-            "link": "https://example.com/exam-schedule",
-            "author": "Admin",
-            "dept": "CSE",
-            "section": "A"
-        },
-        {
-            "details": "Workshop on AI",
-            "link": "https://example.com/ai-workshop",
-            "author": "Prof. Sharma",
-            "dept": "CSE",
-            "section": "B"
-        }
-    ]
+   const notifications = [
+  {
+    details: "App update Rollout 🚀: Check out the new features!",
+    link: "#",
+    author: "System",
+    dept: "All",
+    section: "General"
+  },
+  {
+    details: "Now You Can Access Quiz From new UI - Get Your Quiz Code from faculty Enter it and All set it will automatically login into login window and redirect to the Questions Page. 🔧",
+    link: "https://aims-abes.vercel.app/quiz",
+    author: "Dev Team",
+    dept: "All",
+    section: "General"
+  },
+  
+  {
+    details: "Now From Dashboard See Your Daily Attandance with Daily TimeTable",
+    link: "#",
+    author: "Dev Team",
+    dept: "All",
+    section: "Important"
+  },{
+    details: "New dark mode option 🌙 is now live!",
+    link: "#",
+    author: "UI Team",
+    dept: "Design",
+    section: "UX"
+  }
+];
     return jsonify(notifications)
 
 
